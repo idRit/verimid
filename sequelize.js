@@ -13,7 +13,8 @@ const sequelize = new Sequelize('u835472335_verve', 'root', '', {
     idle: 10000
   },
   define: {
-      timestamps: false
+      timestamps: false,
+      freezeTableName: true
   }
 })
 

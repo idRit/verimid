@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
     res.send('working')
 })
 
-require('./api/routes/api-routes.js')(app);
+require('./api/routes/api-routes.js')(app)
 
 const port = 3000
 app.listen(port, () => {
