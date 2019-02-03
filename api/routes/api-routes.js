@@ -1,11 +1,17 @@
 const { Paytm, Sports } = require('../../sequelize')
+let mysql = require('mysql')
+let connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'u835472335_verve'
+})
+
 
 module.exports = (app) => {
     const order = require('../controllers/api-controller');
     
     app.get('/api/getDetails/:orderId', (req, res) => {
-        console.log('im in')
-
         Paytm.findAll( {
             where: {
                 orderId: req.params.orderId
@@ -34,46 +40,18 @@ module.exports = (app) => {
     });
 
     app.get('/api/getByPhone/:phoneNum', (req, res) => {
-        let something = [];
-        Sports.findAll({
-            where: {
-                contact_no: req.params.phoneNum
-            },
-            attributes: ['orderId']
-        }).then(order => {
-            if(!order) {
-                res.write('nothing found');
-            } else {
-                let orders = order;
-                orders.forEach(event => {
-                    let x;
-                    (async function() {
-                        x = await getOrderId(event, res)
-                    })()
-                    console.log(x)
-                });
+        //select orderId from sports where contact_no = '9699993794' 
+        //and orderId in (SELECT orderId from paytm where Txn_status = 'SUCCESS')
+        //req.params.phoneNum
+        connection.connect();
+        connection.query(
+            "select orderId from sports where contact_no = "+req.params.phoneNum+ 
+            " and orderId in (SELECT orderId from paytm where Txn_status = 'SUCCESS')",
+            (err, rows, fields) => {
+                if (err) res.json('something missing');
 
-                res.json(something);
+                res.json(rows);
             }
-        })
+        )
     });
-
-    function getOrderId(event, res) {
-        //console.log(event.orderId)
-        Paytm.findAll({
-            where: {
-                orderId: event.orderId,
-                Txn_Status: 'SUCCESS'
-            },
-            attributes: ['Txn_Status']
-        }).then(obj => {
-            if(obj.length == 0) {
-                return '';
-            }
-            else {
-                //console.log(event.orderId);
-                return(event.orderId)                        
-            }
-        })
-    }
 }
