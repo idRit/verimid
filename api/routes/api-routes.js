@@ -34,31 +34,46 @@ module.exports = (app) => {
     });
 
     app.get('/api/getByPhone/:phoneNum', (req, res) => {
-        console.log('im in1')
-
+        let something = [];
         Sports.findAll({
             where: {
-                contact_no: req.params.contactNum
+                contact_no: req.params.phoneNum
             },
-            attributes: [orderId]
+            attributes: ['orderId']
         }).then(order => {
             if(!order) {
-                res.json('nothing found');
+                res.write('nothing found');
             } else {
-                Paytm.findAll({
-                    where: {
-                        orderId: order,
-                        Txn_Status: '%S%'
-                    },
-                    attributes: [Txn_Status]
-                }).then(obj => {
-                    if(!obj) {
-                        res.json('nothing found')
-                    } else {
-                        res.json(order);
-                    }
-                })
+                let orders = order;
+                orders.forEach(event => {
+                    let x;
+                    (async function() {
+                        x = await getOrderId(event, res)
+                    })()
+                    console.log(x)
+                });
+
+                res.json(something);
             }
         })
     });
+
+    function getOrderId(event, res) {
+        //console.log(event.orderId)
+        Paytm.findAll({
+            where: {
+                orderId: event.orderId,
+                Txn_Status: 'SUCCESS'
+            },
+            attributes: ['Txn_Status']
+        }).then(obj => {
+            if(obj.length == 0) {
+                return '';
+            }
+            else {
+                //console.log(event.orderId);
+                return(event.orderId)                        
+            }
+        })
+    }
 }
