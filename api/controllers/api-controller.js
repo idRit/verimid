@@ -1,27 +1,21 @@
-var paytmSchema = require('../models/paytmModel.js');
-var sportSchema = require('../models/sportsModel.js');
+const { Paytm, Sports, Concert } = require('../../sequelize')
+let mysql = require('mysql')
+let connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'u835472335_verve'
+})
+connection.connect();
 
 exports.getDetails = (req, res) => {
-	paytmSchema.findAll( {where: {orderId: req.params.orderId}}).then(order => {
-		if(!order) {
-			res.json('null');
-		} else {
-			sportSchema.findAll({
-                where: {
-                    orderId: req.params.orderId
-                },
-                attributes: [name, contact_no, event]
-            }).then(orderDet => {
-				if(!orderDet) {
-                        res.json();
-                } else {
-                    orderDet => res.json(orderDet)
-                }
-			}).catch(err => {
-				res.status(500).send({
-					message: err.message || "Some error occurred while retrieving notes."
-				});
-			})
-		}
-	})
+	
+}
+
+exports.getByPhone = (req, res) => {
+
+}
+
+exports.getConcertDetais = (req, res) => {
+	
 }

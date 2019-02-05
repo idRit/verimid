@@ -20,6 +20,7 @@ const sequelize = new Sequelize('u835472335_verve', 'root', '', {
 
 const Paytm = paytmModel(sequelize, Sequelize)
 const Sports = sportsModel(sequelize, Sequelize)
+const Concert = concertModel(squelize, Sequelize)
 
 sequelize.authenticate()
   .then(() => {
@@ -36,5 +37,6 @@ sequelize.authenticate()
 
 module.exports = {
   Paytm, 
-  Sports
+  Sports,
+  Concert
 }

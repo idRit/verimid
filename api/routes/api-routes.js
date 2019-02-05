@@ -1,4 +1,4 @@
-const { Paytm, Sports } = require('../../sequelize')
+const { Paytm, Sports, Concert } = require('../../sequelize')
 let mysql = require('mysql')
 let connection = mysql.createConnection({
     host: 'localhost',
@@ -6,6 +6,7 @@ let connection = mysql.createConnection({
     password: '',
     database: 'u835472335_verve'
 })
+connection.connect();
 
 
 module.exports = (app) => {
@@ -43,9 +44,8 @@ module.exports = (app) => {
         //select orderId from sports where contact_no = '9699993794' 
         //and orderId in (SELECT orderId from paytm where Txn_status = 'SUCCESS')
         //req.params.phoneNum
-        connection.connect();
         connection.query(
-            "select orderId from sports where contact_no = "+req.params.phoneNum+ 
+            "select name, contact_no, event from sports where contact_no = "+req.params.phoneNum+ 
             " and orderId in (SELECT orderId from paytm where Txn_status = 'SUCCESS')",
             (err, rows, fields) => {
                 if (err) res.json('something missing');
@@ -53,5 +53,14 @@ module.exports = (app) => {
                 res.json(rows);
             }
         )
+    });
+
+    app.get('/api/getConcertDetails/:ticket', (req, res) => {
+        Concert.findAll({
+            where: {
+                ticket: req.params.ticket
+            },
+            attributes: ['name', 'phone']
+        }).then(result => res.json(result));
     });
 }
