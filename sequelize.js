@@ -3,7 +3,9 @@ const Sequelize = require('sequelize')
 const paytmModel = require('./api/models/paytmModel')
 const sportsModel = require('./api/models/sportsModel')
 
-const sequelize = new Sequelize('u835472335_verve', 'root', '', {
+const {Database, UserName, Password} = require('./databaseCredentials');
+
+const sequelize = new Sequelize(Database, UserName, Password, {
   host: 'localhost',
   dialect: 'mysql',
   pool: {

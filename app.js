@@ -1,6 +1,5 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const { Paytm, Sports } = require('./sequelize')
 
 const app = express()
 app.use(bodyParser.json())
